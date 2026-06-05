@@ -39,6 +39,7 @@ const config: PlaywrightTestConfig = {
         outputFile: 'jsonReports/jsonReport.json',
       },
     ],
+    ['junit', { outputFile: 'test-results.xml' }],
     [
       'html',
       {
