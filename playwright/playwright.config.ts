@@ -40,15 +40,7 @@ const config: PlaywrightTestConfig = {
       },
     ],
     ['junit', { outputFile: 'test-results.xml' }],
-    [
-      'html',
-      {
-        open: 'on-failure',
-        trace: 'on',
-        outputDir: `playwright-report/${process.env.environment?.toUpperCase() ?? 'AT24'}`,
-        outputFolder: `playwright-report/${process.env.environment?.toUpperCase() ?? 'AT24'}`,
-      },
-    ],
+    ['html', { open: 'never' }],
   ],
 
   projects: [
