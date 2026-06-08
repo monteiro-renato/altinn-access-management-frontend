@@ -332,6 +332,7 @@
   "access_packages": {
     "helptext_button": "Kva er tilgangspakkar?",
     "helptext_content": "Tilgangspakkar er ei samling av skjema og tenester som handlar om same tema. Desse skal erstatte Altinn-roller og vil bli fylte med fleire tenester etter kvart.",
+    "access_packages_in_area_title": "Tilgangspakkar i området:",
     "given_packages_title": "Mottatte tilgangspakkar",
     "available_packages_title": "Tilgjengelege tilgangspakkar",
     "other_available": "Andre tilgjengelege",
@@ -1079,6 +1080,10 @@
   },
   "poa_status": {
     "no_permissions": "Du må gi fullmakt"
+  },
+  "party_info": {
+    "delegate_confirmation": "Ønskjer du å gi <b>{{partyName}}</b> fullmakt til <b>{{packageName}}</b>? Brukaren vil få tilgang til alle tenestene i pakken.",
+    "revoke_confirmation": "Ønskjer du å slette fullmakta til <b>{{partyName}}</b> for <b>{{packageName}}</b>? Brukaren vil miste tilgang til alle tenestene i pakken."
   },
   "package_poa_details_page": {
     "page_title": "Tilgangspakke - Altinn",

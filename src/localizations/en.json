@@ -335,6 +335,7 @@
   "access_packages": {
     "helptext_button": "What are access packages?",
     "helptext_content": "Access packages are a collection of forms and services that deal with the same topic. These will replace Altinn roles and will be filled with more services over time.",
+    "access_packages_in_area_title": "Access packages in this area:",
     "given_packages_title": "Currently held access packages",
     "available_packages_title": "Available access packages",
     "other_available": "Other available",
@@ -1082,6 +1083,10 @@
   },
   "poa_status": {
     "no_permissions": "You have to give power of attorney"
+  },
+  "party_info": {
+    "delegate_confirmation": "Do you want to grant <b>{{partyName}}</b> power of attorney for <b>{{packageName}}</b>? The user will get access to all services in the package.",
+    "revoke_confirmation": "Do you want to revoke <b>{{partyName}}</b>'s power of attorney for <b>{{packageName}}</b>? The user will lose access to all services in the package."
   },
   "package_poa_details_page": {
     "page_title": "Access package - Altinn",
