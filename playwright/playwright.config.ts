@@ -40,7 +40,10 @@ const config: PlaywrightTestConfig = {
       },
     ],
     ['junit', { outputFile: 'test-results.xml' }],
-    ['html', { open: 'never' }],
+    ['html', {
+      open: 'never',
+      attachmentsBaseURL: 'https://jolly-plant-033965703.7.azurestaticapps.net/api/getreport/'
+    }],
   ],
 
   projects: [
