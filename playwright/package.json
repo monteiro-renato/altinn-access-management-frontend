@@ -18,7 +18,6 @@
   "devDependencies": {
     "@axe-core/playwright": "^4.11.3",
     "@azure/microsoft-playwright-testing": "^1.0.0-beta.7",
-    "@playwright/test": "^1.60.0",
     "@types/node": "^22.18.0",
     "csv-parser": "^3.2.1",
     "dotenv": "^16.6.1"
