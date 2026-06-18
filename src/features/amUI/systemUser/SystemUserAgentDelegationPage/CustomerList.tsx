@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react';
 import {
   DsButton,
   DsSearch,
-  DsSpinner,
   List,
   DsValidationMessage,
   ListItem,
@@ -131,7 +130,7 @@ export const CustomerList = ({
             key={customer.id}
             id={customer.id}
             icon={{ type: 'company', name: customer.name }}
-            title={{ children: customer.name, as: 'h3' }}
+            title={{ children: customer.name, as: 'div' }}
             description={`${t('common.org_nr')} ${formatOrgNr(customer.orgNo)}`}
             interactive={false}
             ariaLabel={customer.name}
@@ -151,13 +150,16 @@ export const CustomerList = ({
         ))}
       </List>
       {totalPages > 1 && (
-        <AmPagination
-          totalPages={totalPages}
-          showPages={showPages}
-          currentPage={currentPage}
-          setCurrentPage={setCurrentPage}
-          className={classes.pagingContainer}
-        />
+        <div className={classes.pagingContainer}>
+          <AmPagination
+            totalPages={totalPages}
+            showPages={showPages}
+            currentPage={currentPage}
+            setCurrentPage={setCurrentPage}
+            size='sm'
+            hideLabels
+          />
+        </div>
       )}
     </div>
   );
@@ -185,49 +187,54 @@ const ListControls = ({
 
   return (
     <div className={classes.listControls}>
-      {isLoading && (
-        <div className={classes.loadingSpinner}>
-          <DsSpinner
-            data-size='sm'
-            aria-hidden
-          />
-        </div>
-      )}
-      {isError && delegation && (
-        <DsValidationMessage data-size='sm'>
-          {t('systemuser_agent_delegation.remove_system_user_error')}
-        </DsValidationMessage>
-      )}
-      {isError && !delegation && (
-        <DsValidationMessage data-size='sm'>
-          {t('systemuser_agent_delegation.add_system_user_error')}
-        </DsValidationMessage>
-      )}
-      {!isLoading && delegation && onRemoveCustomer && (
+      <div aria-live='polite'>
+        {isError && delegation && !isLoading && (
+          <DsValidationMessage data-size='sm'>
+            {t('systemuser_agent_delegation.remove_system_user_error')}
+          </DsValidationMessage>
+        )}
+        {isError && !delegation && !isLoading && (
+          <DsValidationMessage data-size='sm'>
+            {t('systemuser_agent_delegation.add_system_user_error')}
+          </DsValidationMessage>
+        )}
+      </div>
+      {(onRemoveCustomer || onAddCustomer) && (
         <DsButton
           variant='tertiary'
           data-size='sm'
-          data-color='danger'
-          aria-label={t('systemuser_agent_delegation.remove_from_system_user_aria', {
-            customerName: customer.name,
-          })}
-          onClick={() => onRemoveCustomer(delegation, customer.name)}
+          data-color={delegation ? 'danger' : 'primary'}
+          aria-label={t(
+            delegation
+              ? 'systemuser_agent_delegation.remove_from_system_user_aria'
+              : 'systemuser_agent_delegation.add_to_system_user_aria',
+            {
+              customerName: customer.name,
+            },
+          )}
+          loading={isLoading}
+          aria-disabled={isLoading}
+          onClick={() => {
+            if (isLoading) {
+              return;
+            } else if (onRemoveCustomer && delegation) {
+              onRemoveCustomer(delegation, customer.name);
+            } else if (onAddCustomer && !delegation) {
+              onAddCustomer(customer);
+            }
+          }}
         >
-          <MinusCircleIcon aria-hidden='true' />{' '}
-          {!isSmall && t('systemuser_agent_delegation.remove_from_system_user')}
-        </DsButton>
-      )}
-      {!isLoading && !delegation && onAddCustomer && (
-        <DsButton
-          variant='tertiary'
-          data-size='sm'
-          aria-label={t('systemuser_agent_delegation.add_to_system_user_aria', {
-            customerName: customer.name,
-          })}
-          onClick={() => onAddCustomer(customer)}
-        >
-          <PlusCircleIcon aria-hidden='true' />{' '}
-          {!isSmall && t('systemuser_agent_delegation.add_to_system_user')}
+          {delegation ? (
+            <>
+              <MinusCircleIcon aria-hidden='true' />
+              {!isSmall && t('systemuser_agent_delegation.remove_from_system_user')}
+            </>
+          ) : (
+            <>
+              <PlusCircleIcon aria-hidden='true' />
+              {!isSmall && t('systemuser_agent_delegation.add_to_system_user')}
+            </>
+          )}
         </DsButton>
       )}
       {customer.isSelfOrg && (

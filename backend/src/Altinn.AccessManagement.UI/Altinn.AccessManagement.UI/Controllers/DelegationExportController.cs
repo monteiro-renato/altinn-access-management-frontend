@@ -1,3 +1,4 @@
+using System.Collections.Concurrent;
 using Altinn.AccessManagement.UI.Core.Helpers;
 using Altinn.AccessManagement.UI.Core.Models.DelegationExport;
 using Altinn.AccessManagement.UI.Core.Services.Interfaces;
@@ -18,6 +19,8 @@ namespace Altinn.AccessManagement.UI.Controllers
         {
             "roles", "accesspackages", "singlerights", "instances",
         };
+
+        private static readonly ConcurrentDictionary<int, byte> _activeExports = new();
 
         private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly ILogger _logger;
@@ -50,9 +53,9 @@ namespace Altinn.AccessManagement.UI.Controllers
         /// <returns>A zip file, or an error status.</returns>
         [HttpGet]
         [Authorize]
-        [Route("reportee/{partyUuid}")]
+        [Route("")]
         public async Task<ActionResult> ExportReporteeDelegations(
-            [FromRoute] Guid partyUuid,
+            [FromQuery] Guid partyUuid,
             [FromQuery] bool includeSubunits = false,
             [FromQuery] string types = null,
             [FromQuery] string languageCode = null)
@@ -60,6 +63,22 @@ namespace Altinn.AccessManagement.UI.Controllers
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
+            }
+
+            if (partyUuid == Guid.Empty)
+            {
+                return BadRequest("partyUuid must be provided.");
+            }
+
+            int userId = AuthenticationHelper.GetUserId(_httpContextAccessor.HttpContext);
+            if (userId == 0)
+            {
+                return BadRequest("The userId is not provided in the context.");
+            }
+
+            if (!_activeExports.TryAdd(userId, 0))
+            {
+                return StatusCode(StatusCodes.Status429TooManyRequests, "An export is already in progress. Please wait for it to complete.");
             }
 
             try
@@ -100,6 +119,10 @@ namespace Altinn.AccessManagement.UI.Controllers
             {
                 _logger.LogError(ex, "Error exporting delegated rights for party {PartyUuid}", partyUuid);
                 return StatusCode(StatusCodes.Status500InternalServerError, "An error occurred while building the export.");
+            }
+            finally
+            {
+                _activeExports.TryRemove(userId, out _);
             }
         }
 
